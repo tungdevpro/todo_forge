@@ -1,8 +1,10 @@
 import 'package:floor/floor.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import '../common/table_name.dart';
 part 'task_entity.g.dart';
 
-@entity
+@Entity(tableName: TableName.task)
 @JsonSerializable()
 class TaskEntity {
   @PrimaryKey(autoGenerate: true)

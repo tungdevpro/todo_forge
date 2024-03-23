@@ -16,7 +16,7 @@ void main() async {
 Future<void> _prepare() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = CustomBlocObserver();
-  DataLayer.init();
+  await DataLayer.init();
   DomainLayer.init();
   configureDependencies();
 

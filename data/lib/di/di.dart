@@ -12,17 +12,14 @@ final di = GetIt.instance..allowReassignment = true;
   preferRelativeImports: true,
   asExtension: true,
 )
-void configureDependencies() {
-  _init(di);
+Future<void> configureDependencies() async {
+  await _registerDatabase(di);
   di.initializeDataLayer();
 }
 
-void _init(GetIt locator) {
-  _registerDatabase(locator);
-}
-
-void _registerDatabase(GetIt locator) async {
+Future<void> _registerDatabase(GetIt locator) async {
   final database = await $FloorAppDatabase.databaseBuilder("task_database.db").build();
+  print('database-----> $database');
   di.registerLazySingleton<AppDatabase>(() => database);
   di.registerLazySingleton<TaskDao>(() => di.get<AppDatabase>().taskDao);
 }

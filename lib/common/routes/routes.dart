@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_forge/feature/home/home_page.dart';
+import 'package:todo_forge/feature/task/task_page.dart';
 
 import '../../feature/splash/splash_page.dart';
 
@@ -12,6 +13,7 @@ abstract class Routings {
   static Map<String, WidgetBuilder> routes = {
     RoutePath.initial: (_) => const SplashPage(),
     RoutePath.home: (_) => const HomePage(),
+    RoutePath.task: (_) => const TaskPage(),
   };
 
   static Route<dynamic> generateRoutes(RouteSettings settings) {

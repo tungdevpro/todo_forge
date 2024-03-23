@@ -28,8 +28,16 @@ class TaskBloc extends BaseBloc<TaskEvent, TaskState> implements LibraryInitiali
     add(TaskLoadingEvent());
   }
 
-  void _onTaskLoadingEvent(TaskLoadingEvent event, Emitter<TaskState> emit) {
-    
+  void _onTaskLoadingEvent(TaskLoadingEvent event, Emitter<TaskState> emit) async {
+    final res = await _getAllTaskUsecase.invoke(null);
+    res.when(error: (type, error, code) {
+      print('error....: $error');
+    }, success: (data) {
+      if(data == null || data.isEmpty) {
+          
+      }
+      print('object... $data');
+    },);
   }
 
   void _onTaskLoadmoreEvent(TaskLoadmoreEvent event, Emitter<TaskState> emit) {}

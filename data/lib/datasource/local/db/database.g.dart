@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `TaskEntity` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `description` TEXT, `createdAt` TEXT, `dueDate` TEXT, `status` INTEGER)');
+            'CREATE TABLE IF NOT EXISTS `tasks` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `description` TEXT, `createdAt` TEXT, `dueDate` TEXT, `status` INTEGER)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -106,7 +106,7 @@ class _$TaskDao extends TaskDao {
   )   : _queryAdapter = QueryAdapter(database, changeListener),
         _taskEntityInsertionAdapter = InsertionAdapter(
             database,
-            'TaskEntity',
+            'tasks',
             (TaskEntity item) => <String, Object?>{
                   'id': item.id,
                   'name': item.name,

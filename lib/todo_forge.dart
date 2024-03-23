@@ -23,7 +23,7 @@ class _TodoForgeState extends State<TodoForge> {
       themeMode: ThemeMode.light,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      initialRoute: RoutePath.home,
+      initialRoute: RoutePath.task,
       onGenerateRoute: Routings.generateRoutes,
       navigatorObservers: [CustomRouterObserver()],
       builder: (context, child) {
