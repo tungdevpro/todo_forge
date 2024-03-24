@@ -1,12 +1,12 @@
 import 'package:core/core.dart';
 import 'package:domain/entity/task_entity.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:todo_forge/common/constants/icon_resource.dart';
 import 'package:todo_forge/common/constants/size_global.dart';
 import 'package:todo_forge/feature/task/bloc/task_bloc.dart';
+import 'package:todo_forge/feature/task/bloc/task_event.dart';
 import 'package:todo_forge/feature/task/bloc/task_state.dart';
 import 'package:todo_forge/feature/task/comp/empty_task_comp.dart';
 import 'package:todo_forge/feature/task/comp/item_task_comp.dart';
@@ -15,7 +15,6 @@ import 'package:todo_forge/feature/task/comp/loading_task_comp.dart';
 import '../../common/routes/routes.dart';
 import '../../common/widgets/app_header.dart';
 import '../../shared/widgets/custom_search_comp.dart';
-import 'comp/list_task_comp.dart';
 
 class TaskPage extends StatefulWidget {
   const TaskPage({super.key});
@@ -83,7 +82,7 @@ class _TaskPageState extends CoreBindingState<TaskPage, TaskBloc> {
       hint: 'Enter your name task',
       prefixIcon: SvgPicture.asset(IconResource.iconSearch),
       suffixIcon: SvgPicture.asset(IconResource.iconFilter),
-      onChanged: (v) {},
+      onChanged: (v) => context.read<TaskBloc>().add(SearchTaskEvent(keywords: v)),
     );
   }
 

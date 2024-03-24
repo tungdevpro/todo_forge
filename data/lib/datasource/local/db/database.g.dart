@@ -202,6 +202,33 @@ class _$TaskDao extends TaskDao {
   }
 
   @override
+  Future<List<TaskEntity>> findAllTaskByName(String name) async {
+    return _queryAdapter.queryList('SELECT * FROM tasks WHERE name LIKE ?1',
+        mapper: (Map<String, Object?> row) => TaskEntity(
+            id: row['id'] as int?,
+            name: row['name'] as String?,
+            description: row['description'] as String?,
+            createdAt: row['createdAt'] as String?,
+            dueDate: row['dueDate'] as String?,
+            status: row['status'] as int?),
+        arguments: [name]);
+  }
+
+  @override
+  Stream<List<TaskEntity>> findAllTasksAsStream() {
+    return _queryAdapter.queryListStream('SELECT * FROM tasks',
+        mapper: (Map<String, Object?> row) => TaskEntity(
+            id: row['id'] as int?,
+            name: row['name'] as String?,
+            description: row['description'] as String?,
+            createdAt: row['createdAt'] as String?,
+            dueDate: row['dueDate'] as String?,
+            status: row['status'] as int?),
+        queryableName: 'tasks',
+        isView: false);
+  }
+
+  @override
   Future<void> insertTask(TaskEntity tasks) async {
     await _taskEntityInsertionAdapter.insert(tasks, OnConflictStrategy.abort);
   }

@@ -136,6 +136,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
     nameController.clear();
     descriptionController.clear();
     _selectedDate = null;
+    SnackBarService.instance().show(context, 'Add a new task successful');
+    AppNavigator.instance().close();
   }
 
   void _onChangedDate(DateTime value) => _selectedDate = value;

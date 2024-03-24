@@ -19,7 +19,12 @@ class TaskSuccessState extends TaskState {
 }
 
 class TaskEmptyState extends TaskState {
-  TaskEmptyState({super.error});
+  TaskEmptyState({
+    super.error,
+  });
+
+  @override
+  List<Object?> get props => [super.props];
 }
 
 class TaskFailedState extends TaskState {

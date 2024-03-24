@@ -1,3 +1,4 @@
+import 'package:core/core.dart';
 import 'package:core/util/util.dart';
 import 'package:domain/usecase/task/add_new_task_usecase.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,6 @@ import 'package:todo_forge/common/constants/icon_resource.dart';
 import 'package:todo_forge/common/constants/size_global.dart';
 import 'package:todo_forge/feature/task/bloc/task_bloc.dart';
 import 'package:todo_forge/feature/task/bloc/task_event.dart';
-import 'package:todo_forge/feature/task/bloc/task_state.dart';
 import 'package:todo_forge/shared/task_status.dart';
 
 import '../../../common/constants/font_size.dart' as fs;
@@ -20,9 +20,11 @@ class ItemTaskComp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var inProccess = item.status == TaskStatus.inProccess.index;
     return Dismissible(
-      key: Key(item.id!.toString()),
-      onDismissed: (_) => context.read<TaskBloc>().add(DeleteTaskEvent(taskEntity: item)),
+      key: ObjectKey(item),
+      // onDismissed: (_) => context.read<TaskBloc>().add(DeleteTaskEvent(taskEntity: item)),
+      confirmDismiss: (direction) => _onConfirmDismiss(context, item, direction),
       child: Container(
           margin: const EdgeInsets.only(bottom: SizeGlobal.paddingSM),
           padding: const EdgeInsets.symmetric(vertical: SizeGlobal.paddingSM),
@@ -31,20 +33,20 @@ class ItemTaskComp extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Checkbox(
-                value: item.status == TaskStatus.inProccess.index ? false : true,
-                onChanged: (value) => _onChangedTaskStatus(context, value),
-                // onChanged: (value) {
-                // var taskModel = TaskModel(
-                //     id: widget.taskModel.id,
-                //     title: widget.taskModel.name,
-                //     description: widget.taskModel.description,
-                //     completed: !widget.taskModel.completed,
-                //     startDateTime: widget.taskModel.startDateTime,
-                //     stopDateTime: widget.taskModel.stopDateTime);
-                // context.read<TasksBloc>().add(
-                //     UpdateTaskEvent(taskModel: taskModel));
-                // },
+              // Checkbox(
+              //   value: item.status == TaskStatus.inProccess.index ? false : true,
+              //   onChanged: (value) => _onChangedTaskStatus(context, value),
+              // ),
+              StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) => Checkbox(
+                  value: inProccess ? false : true,
+                  onChanged: (value) {
+                    setState(() {
+                      inProccess = !value!;
+                    });
+                    _onChangedTaskStatus(context, !inProccess);
+                  },
+                ),
               ),
               Expanded(
                 child: Column(
@@ -81,19 +83,32 @@ class ItemTaskComp extends StatelessWidget {
   }
 
   void _onChangedTaskStatus(BuildContext context, bool? value) {
-    print('value----> ${value}');
     var param = TaskParam(
       id: item.id,
       name: item.name,
       description: item.description,
       createdAt: item.createdAt,
       dueDate: item.dueDate,
-
-      // status: !widget.taskModel.completed,
-      // startDateTime: widget.taskModel.startDateTime,
-      // stopDateTime: widget.taskModel.stopDateTime,
+      status: value == true ? TaskStatus.done.index : TaskStatus.inProccess.index,
     );
-    // context.read<TasksBloc>().add(
-    //     UpdateTaskEvent(taskModel: taskModel));
+    context.read<TaskBloc>().add(UpdateStatusByIdTaskEvent(param: param));
+  }
+
+  Future<bool?> _onConfirmDismiss(BuildContext context, TaskModel item, DismissDirection direction) async {
+    if (direction == DismissDirection.endToStart && context.mounted) {
+      context.read<TaskBloc>().add(DeleteTaskEvent(
+            param: TaskParam(
+              id: item.id,
+              name: item.name,
+              description: item.description,
+              dueDate: item.dueDate,
+              createdAt: item.createdAt,
+              status: item.status,
+            ),
+          ));
+      SnackBarService.instance().show(context, 'Removed task', status: SnackbarStatus.success);
+      return true;
+    }
+    return false;
   }
 }

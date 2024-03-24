@@ -24,4 +24,10 @@ abstract class TaskDao {
 
   @Query('UPDATE OR ABORT ${TableName.task} SET status = :status WHERE id = :id')
   Future<int?> updateStatusById(int status, int id);
+
+  @Query('SELECT * FROM ${TableName.task} WHERE name LIKE :name')
+  Future<List<TaskEntity>> findAllTaskByName(String name);
+
+  @Query('SELECT * FROM ${TableName.task}')
+  Stream<List<TaskEntity>> findAllTasksAsStream();
 }

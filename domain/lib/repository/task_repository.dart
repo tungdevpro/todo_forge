@@ -8,4 +8,10 @@ abstract class TaskRepository {
   Future<Result<TaskEntity>> getTask(int id);
 
   Future<Result<void>> insertTask(TaskParam? param);
+
+  Future<Result<void>> deleteTask(TaskParam? param);
+
+  Future<Result<void>> updateStatus(TaskParam? param);
+
+  Future<Result<List<TaskEntity>>> getTasksByKeyword(String? param);
 }

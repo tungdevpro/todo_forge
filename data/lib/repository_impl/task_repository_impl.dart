@@ -22,7 +22,6 @@ class TaskRepositoryImpl extends BaseRepository implements TaskRepository {
     final resp = await localCall(
       _appDatabase.taskDao.findAllTask(),
       mapper: (entity) {
-        print('entity----> $entity');
         return entity;
       },
     );
@@ -34,6 +33,40 @@ class TaskRepositoryImpl extends BaseRepository implements TaskRepository {
     final resp = await localCall<void, void>(
       _appDatabase.taskDao.insertTask(param!.toEntity()),
       mapper: (entity) {
+        return entity;
+      },
+    );
+    return resp;
+  }
+
+  @override
+  Future<Result<void>> deleteTask(TaskParam? param) async {
+    final resp = await localCall<void, void>(
+      _appDatabase.taskDao.deleteTask(param!.toEntity()),
+      mapper: (entity) {
+        return entity;
+      },
+    );
+    return resp;
+  }
+
+  @override
+  Future<Result<void>> updateStatus(TaskParam? param) async {
+    final resp = await localCall<void, void>(
+      _appDatabase.taskDao.updateStatusById(param!.status!, param.id!),
+      mapper: (entity) {
+        return entity;
+      },
+    );
+    return resp;
+  }
+
+  @override
+  Future<Result<List<TaskEntity>>> getTasksByKeyword(String? param) async {
+    final resp = await localCall(
+      _appDatabase.taskDao.findAllTaskByName(param ?? ''),
+      mapper: (entity) {
+        print('entity====> $entity');
         return entity;
       },
     );

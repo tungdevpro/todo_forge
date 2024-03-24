@@ -1,5 +1,4 @@
 import 'package:core/core.dart';
-import 'package:domain/entity/task_entity.dart';
 import 'package:domain/usecase/task/add_new_task_usecase.dart';
 
 abstract class TaskEvent extends BaseEvent {}
@@ -36,21 +35,21 @@ class SortTaskEvent extends TaskEvent {
 }
 
 class UpdateTaskEvent extends TaskEvent {
-  final TaskEntity taskEntity;
+  final TaskParam param;
 
-  UpdateTaskEvent({required this.taskEntity});
+  UpdateTaskEvent({required this.param});
 
   @override
-  List<Object?> get props => [taskEntity];
+  List<Object?> get props => [param];
 }
 
 class DeleteTaskEvent extends TaskEvent {
-  final TaskEntity taskEntity;
+  final TaskParam param;
 
-  DeleteTaskEvent({required this.taskEntity});
+  DeleteTaskEvent({required this.param});
 
   @override
-  List<Object?> get props => [taskEntity];
+  List<Object?> get props => [param];
 }
 
 class SearchTaskEvent extends TaskEvent {
@@ -60,4 +59,13 @@ class SearchTaskEvent extends TaskEvent {
 
   @override
   List<Object?> get props => [keywords];
+}
+
+class UpdateStatusByIdTaskEvent extends TaskEvent {
+  final TaskParam param;
+
+  UpdateStatusByIdTaskEvent({required this.param});
+
+  @override
+  List<Object?> get props => [param];
 }
