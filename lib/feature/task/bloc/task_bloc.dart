@@ -6,16 +6,13 @@ import 'package:domain/usecase/task/add_new_task_usecase.dart';
 import 'package:domain/usecase/task/change_status_task_usecase.dart';
 import 'package:domain/usecase/task/delete_task_usecase.dart';
 import 'package:domain/usecase/task/find_all_task_by_keyword_usecase.dart';
+import 'package:domain/usecase/task/find_all_task_by_status_usecase.dart';
 import 'package:domain/usecase/task/get_all_task_usecase.dart';
 import 'package:injectable/injectable.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:todo_forge/di/di.dart';
 import 'package:todo_forge/feature/task/bloc/task_event.dart';
 import 'package:todo_forge/feature/task/bloc/task_state.dart';
-
-EventTransformer<Event> debounce<Event>(Duration duration) {
-  return (events, mapper) => events.debounce(duration).switchMap(mapper);
-}
 
 @injectable
 class TaskBloc extends BaseBloc<TaskEvent, TaskState> implements LibraryInitializer<void> {
@@ -24,8 +21,15 @@ class TaskBloc extends BaseBloc<TaskEvent, TaskState> implements LibraryInitiali
   final UpdateStatusTaskUsecase _updateStatusTaskUsecase;
   final DeleteTaskUsecase _deleteTaskUsecase;
   final FindAllTaskByKeywordUsecase _findAllTaskByKeywordUsecase;
-  TaskBloc(this._getAllTaskUsecase, this._addNewTaskUsecase, this._updateStatusTaskUsecase, this._deleteTaskUsecase, this._findAllTaskByKeywordUsecase)
-      : super(TaskLoadingState());
+  final FindAllTaskByStatusUsecase _findAllTaskByStatusUsecase;
+  TaskBloc(
+    this._getAllTaskUsecase,
+    this._addNewTaskUsecase,
+    this._updateStatusTaskUsecase,
+    this._deleteTaskUsecase,
+    this._findAllTaskByKeywordUsecase,
+    this._findAllTaskByStatusUsecase,
+  ) : super(TaskLoadingState());
 
   static TaskBloc get to => di<TaskBloc>()..init();
 
@@ -35,7 +39,7 @@ class TaskBloc extends BaseBloc<TaskEvent, TaskState> implements LibraryInitiali
     on<AddNewTaskEvent>(_onAddNewTaskEvent);
     on<UpdateTaskEvent>(_onUpdateTaskEvent);
     on<DeleteTaskEvent>(_onDeleteTaskEvent);
-    on<SortTaskEvent>(_onSortTaskEvent);
+    on<FilterTaskEvent>(_onFilterTaskEvent);
     on<SearchTaskEvent>(_onSearchTaskEvent, transformer: debounce(const MediumDuration()));
     on<UpdateStatusByIdTaskEvent>(_onUpdateStatusByIdTaskEvent);
   }
@@ -76,21 +80,25 @@ class TaskBloc extends BaseBloc<TaskEvent, TaskState> implements LibraryInitiali
     hideLoading();
   }
 
-  void _onSortTaskEvent(SortTaskEvent event, Emitter<TaskState> emit) async {}
-
   void _onSearchTaskEvent(SearchTaskEvent event, Emitter<TaskState> emit) async {
     final result = await _findAllTaskByKeywordUsecase.invoke('%${event.keywords}%');
     result.when(
       error: (type, error, code) {},
-      success: (data) {
-        // if (data == null || data.isEmpty) {
-        //    emit(TaskSuccessState(tasks: data));
-        //   return;
-        // }
-        emit(TaskSuccessState(tasks: data ?? []));
-      },
+      success: (data) => emit(TaskSuccessState(tasks: data ?? [])),
     );
   }
 
   void _onUpdateStatusByIdTaskEvent(UpdateStatusByIdTaskEvent event, Emitter<TaskState> emit) async => await _updateStatusTaskUsecase.invoke(event.param);
+
+  void _onFilterTaskEvent(FilterTaskEvent event, Emitter<TaskState> emit) async {
+    showLoading();
+    final res = await _findAllTaskByStatusUsecase.invoke(event.status);
+    hideLoading();
+    res.when(
+      error: (type, error, code) => emit(TaskFailedState()),
+      success: (data) => emit(TaskSuccessState(tasks: data ?? [], status: event.status)),
+    );
+  }
+
+  EventTransformer<Event> debounce<Event>(Duration duration) => (events, mapper) => events.debounce(duration).switchMap(mapper);
 }

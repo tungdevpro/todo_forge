@@ -229,6 +229,19 @@ class _$TaskDao extends TaskDao {
   }
 
   @override
+  Future<List<TaskEntity>> findAllTaskByStatus(int status) async {
+    return _queryAdapter.queryList('SELECT * FROM tasks WHERE status = ?1',
+        mapper: (Map<String, Object?> row) => TaskEntity(
+            id: row['id'] as int?,
+            name: row['name'] as String?,
+            description: row['description'] as String?,
+            createdAt: row['createdAt'] as String?,
+            dueDate: row['dueDate'] as String?,
+            status: row['status'] as int?),
+        arguments: [status]);
+  }
+
+  @override
   Future<void> insertTask(TaskEntity tasks) async {
     await _taskEntityInsertionAdapter.insert(tasks, OnConflictStrategy.abort);
   }

@@ -1,8 +1,19 @@
 enum TaskStatus {
-  inProccess('in_proccess'),
-  done('done');
+  none('none'),
+  inProccess('Proccess'),
+  done('Done');
 
-  const TaskStatus(this.code);
+  const TaskStatus(this.title);
 
-  final String code;
+  final String title;
+}
+
+enum TaskSort {
+  latest('Latest'),
+  earliest('Earliest'),
+  az('A-Z'),
+  za('Z-A');
+
+  const TaskSort(this.title);
+  final String title;
 }

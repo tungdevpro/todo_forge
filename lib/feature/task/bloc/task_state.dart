@@ -1,5 +1,6 @@
 import 'package:core/core.dart';
 import 'package:domain/entity/task_entity.dart';
+import 'package:todo_forge/shared/task_status.dart';
 
 abstract class TaskState extends BaseState {
   final List<TaskEntity> tasks;
@@ -15,7 +16,11 @@ abstract class TaskState extends BaseState {
 class TaskLoadingState extends TaskState {}
 
 class TaskSuccessState extends TaskState {
-  TaskSuccessState({super.tasks, super.noMoreData});
+  final int? status;
+  TaskSuccessState({super.tasks, super.noMoreData, this.status});
+
+  @override
+  List<Object?> get props => [super.props, status];
 }
 
 class TaskEmptyState extends TaskState {

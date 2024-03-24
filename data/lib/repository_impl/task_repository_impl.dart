@@ -66,10 +66,14 @@ class TaskRepositoryImpl extends BaseRepository implements TaskRepository {
     final resp = await localCall(
       _appDatabase.taskDao.findAllTaskByName(param ?? ''),
       mapper: (entity) {
-        print('entity====> $entity');
         return entity;
       },
     );
     return resp;
+  }
+
+  @override
+  Future<Result<List<TaskEntity>>> getTasksByStatus(int status) async {
+    return localCall(_appDatabase.taskDao.findAllTaskByStatus(status), mapper: (e) => e);
   }
 }

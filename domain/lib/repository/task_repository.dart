@@ -14,4 +14,6 @@ abstract class TaskRepository {
   Future<Result<void>> updateStatus(TaskParam? param);
 
   Future<Result<List<TaskEntity>>> getTasksByKeyword(String? param);
+
+  Future<Result<List<TaskEntity>>> getTasksByStatus(int status);
 }

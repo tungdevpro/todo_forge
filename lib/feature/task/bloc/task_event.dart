@@ -25,13 +25,13 @@ class AddNewTaskEvent extends TaskEvent {
   List<Object?> get props => [param];
 }
 
-class SortTaskEvent extends TaskEvent {
-  final int sortOption;
+class FilterTaskEvent extends TaskEvent {
+  final int status;
 
-  SortTaskEvent({required this.sortOption});
+  FilterTaskEvent({required this.status});
 
   @override
-  List<Object?> get props => [sortOption];
+  List<Object?> get props => [status];
 }
 
 class UpdateTaskEvent extends TaskEvent {

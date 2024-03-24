@@ -30,4 +30,7 @@ abstract class TaskDao {
 
   @Query('SELECT * FROM ${TableName.task}')
   Stream<List<TaskEntity>> findAllTasksAsStream();
+
+  @Query('SELECT * FROM ${TableName.task} WHERE status = :status')
+  Future<List<TaskEntity>> findAllTaskByStatus(int status);
 }

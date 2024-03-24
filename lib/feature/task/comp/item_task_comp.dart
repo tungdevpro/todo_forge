@@ -23,7 +23,6 @@ class ItemTaskComp extends StatelessWidget {
     var inProccess = item.status == TaskStatus.inProccess.index;
     return Dismissible(
       key: ObjectKey(item),
-      // onDismissed: (_) => context.read<TaskBloc>().add(DeleteTaskEvent(taskEntity: item)),
       confirmDismiss: (direction) => _onConfirmDismiss(context, item, direction),
       child: Container(
           margin: const EdgeInsets.only(bottom: SizeGlobal.paddingSM),

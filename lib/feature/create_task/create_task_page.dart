@@ -51,18 +51,9 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                 padding: const EdgeInsets.symmetric(horizontal: SizeGlobal.padding, vertical: SizeGlobal.padding),
                 child: Column(
                   children: [
-                    BuildTextField(
-                      hint: 'Name',
-                      controller: nameController,
-                      onChanged: (v) {},
-                    ),
+                    BuildTextField(hint: 'Name', controller: nameController, onChanged: (v) {}),
                     const SizedBox(height: SizeGlobal.padding),
-                    BuildTextField(
-                      hint: 'Description',
-                      controller: descriptionController,
-                      inputType: TextInputType.multiline,
-                      onChanged: (v) {},
-                    ),
+                    BuildTextField(hint: 'Description', controller: descriptionController, inputType: TextInputType.multiline, onChanged: (v) {}),
                   ],
                 ),
               ),
@@ -90,7 +81,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                   onPressed: _handleSave,
                   title: 'Save',
                 ),
-              )
+              ),
             ],
           )),
         ),
@@ -106,19 +97,6 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
   }
 
   void _handleSave() async {
-    // SnackBarService.instance().show(context, 'message');
-    // AppDialogs.show(
-    //   context,
-    //   barrierDismissible: true,
-    //   builder: (context) {
-    //     return AlertDialog(
-    //       content: Container(
-    //         height: MediaQuery.sizeOf(context).height / 3.5,
-    //       ),
-    //     );
-    //   },
-    // );
-
     if (nameController.text.trim().isEmpty) {
       SnackBarService.instance().show(context, 'Name task cannot blank', status: SnackbarStatus.failure);
       return;
@@ -136,8 +114,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
     nameController.clear();
     descriptionController.clear();
     _selectedDate = null;
-    SnackBarService.instance().show(context, 'Add a new task successful');
-    AppNavigator.instance().close();
+    SnackBarService.instance().show(context, 'Add a new task successful', status: SnackbarStatus.success);
+    // AppNavigator.instance().close();
   }
 
   void _onChangedDate(DateTime value) => _selectedDate = value;
