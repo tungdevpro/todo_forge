@@ -8,6 +8,7 @@ import 'package:todo_forge/common/constants/size_global.dart';
 import 'package:todo_forge/feature/task/bloc/task_bloc.dart';
 import 'package:todo_forge/feature/task/bloc/task_state.dart';
 
+import '../../common/routes/routes.dart';
 import '../../common/widgets/app_header.dart';
 
 class TaskPage extends StatefulWidget {
@@ -57,7 +58,7 @@ class _TaskPageState extends CoreBindingState<TaskPage, TaskBloc> {
 
   Widget _buildFloatingActionButton() {
     return FloatingActionButton(
-      onPressed: () {},
+      onPressed: () => AppNavigator.instance().pushNamed(RoutePath.createTask),
       backgroundColor: Theme.of(context).primaryColor,
       child: const Icon(Icons.add, color: Colors.white),
     );

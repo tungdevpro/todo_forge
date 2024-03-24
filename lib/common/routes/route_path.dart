@@ -7,6 +7,7 @@ abstract class RoutePath {
   static const String main = "/main";
   static const String home = "/home";
   static const String task = "/task";
+  static const String createTask = "/create_task";
 
 }
 
