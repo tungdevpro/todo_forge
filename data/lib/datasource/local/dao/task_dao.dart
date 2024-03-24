@@ -23,5 +23,5 @@ abstract class TaskDao {
   Future<void> updateTask(TaskEntity task);
 
   @Query('UPDATE OR ABORT ${TableName.task} SET status = :status WHERE id = :id')
-  Future<int?> updateTypeById(int status, int id);
+  Future<int?> updateStatusById(int status, int id);
 }
