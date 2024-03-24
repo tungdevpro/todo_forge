@@ -18,6 +18,10 @@ class TaskSuccessState extends TaskState {
    TaskSuccessState({super.tasks, super.noMoreData});
 }
 
+class TaskEmptyState extends TaskState {
+   TaskEmptyState({super.error});
+}
+
 class TaskFailedState extends TaskState {
    TaskFailedState({super.error});
 }

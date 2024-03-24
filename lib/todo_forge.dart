@@ -17,13 +17,14 @@ class _TodoForgeState extends State<TodoForge> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Todo Forge',
+      navigatorKey: AppNavigator.instance().navigatorKey,
       debugShowCheckedModeBanner: false,
       // localizationsDelegates: ConfigLocalization.loads(),
       // supportedLocales: ConfigLocalization.supportedLocales(),
       themeMode: ThemeMode.light,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      initialRoute: RoutePath.task,
+      initialRoute: RoutePath.initial,
       onGenerateRoute: Routings.generateRoutes,
       navigatorObservers: [CustomRouterObserver()],
       builder: (context, child) {

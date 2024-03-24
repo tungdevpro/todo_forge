@@ -30,14 +30,18 @@ class TaskBloc extends BaseBloc<TaskEvent, TaskState> implements LibraryInitiali
 
   void _onTaskLoadingEvent(TaskLoadingEvent event, Emitter<TaskState> emit) async {
     final res = await _getAllTaskUsecase.invoke(null);
-    res.when(error: (type, error, code) {
-      print('error....: $error');
-    }, success: (data) {
-      if(data == null || data.isEmpty) {
-          
-      }
-      print('object... $data');
-    },);
+    res.when(
+      error: (type, error, code) {
+        emit(TaskFailedState());
+      },
+      success: (data) {
+        if (data == null || data.isEmpty) {
+          emit(TaskEmptyState());
+          return;
+        }
+        emit(TaskSuccessState(tasks: data));
+      },
+    );
   }
 
   void _onTaskLoadmoreEvent(TaskLoadmoreEvent event, Emitter<TaskState> emit) {}
