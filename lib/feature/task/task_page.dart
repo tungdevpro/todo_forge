@@ -24,7 +24,7 @@ class _TaskPageState extends CoreBindingState<TaskPage, TaskBloc> {
         if(state is TaskLoadingState) {
           return Column(
             children: [
-              SizedBox(width: 30, height: 30, child: CircularProgressIndicator()),
+              // SizedBox(width: 30, height: 30, child: CircularProgressIndicator()),
             ],
           );
         }
