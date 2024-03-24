@@ -93,9 +93,9 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
           ? null
           : IconButton(
               onPressed: onLeadingPressed ?? () => _onPop(context),
-              icon: Container(
-                padding: const EdgeInsets.only(left: SizeGlobal.padding),
-                child: SvgPicture.asset(IconResource.arrowLeft, width: 24),
+              icon: SvgPicture.asset(
+                IconResource.iconArrowLeft,
+                width: 30,
               ),
             ),
       centerTitle: centerTitle,
@@ -105,7 +105,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
         child: titleType == AppBarTitle.text
             ? Text(text ?? '', style: titleTextStyle)
             : titleType == AppBarTitle.logo
-                ?  SvgPicture.asset(IconResource.arrowLeft, width: 24)
+                ? SvgPicture.asset(IconResource.arrowLeft) // [note]: change logo at here
                 : null,
       ),
       actions: actions,

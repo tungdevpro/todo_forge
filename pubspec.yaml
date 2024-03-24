@@ -81,6 +81,8 @@ flutter:
     - assets/
     - assets/icons/
     - assets/fonts/
+    - assets/fonts/google_sans/
+    - assets/fonts/satoshi/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -114,6 +116,16 @@ flutter:
           weight: 500
         - asset: assets/fonts/google_sans/GoogleSans-Regular.ttf
           weight: 400
+    - family: Satoshi
+      fonts:
+        - asset: assets/fonts/satoshi/Satoshi-Bold.otf
+          weight: 600
+        - asset: assets/fonts/satoshi/Satoshi-Medium.otf
+          weight: 500
+        - asset: assets/fonts/satoshi/Satoshi-Regular.otf
+          weight: 400
+        - asset: assets/fonts/satoshi/Satoshi-Light.otf
+          weight: 200
 
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
