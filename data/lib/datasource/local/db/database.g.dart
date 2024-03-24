@@ -191,7 +191,7 @@ class _$TaskDao extends TaskDao {
   }
 
   @override
-  Future<int?> updateTypeById(
+  Future<int?> updateStatusById(
     int status,
     int id,
   ) async {
