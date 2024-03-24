@@ -1,8 +1,10 @@
 import 'package:data/datasource/local/db/database.dart';
+import 'package:data/mapper/task_mapper.dart';
 import 'package:data/repository_impl/base/base_repository.dart';
 import 'package:domain/common/result.dart';
 import 'package:domain/entity/task_entity.dart';
 import 'package:domain/repository/task_repository.dart';
+import 'package:domain/usecase/task/add_new_task_usecase.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: TaskRepository)
@@ -17,10 +19,24 @@ class TaskRepositoryImpl extends BaseRepository implements TaskRepository {
 
   @override
   Future<Result<List<TaskEntity>>> getTasks() async {
-    final resp = await localCall(_appDatabase.taskDao.findAllTask(), mapper: (entity) {
-      print('entity----> $entity');
-      return entity;
-    },);
+    final resp = await localCall(
+      _appDatabase.taskDao.findAllTask(),
+      mapper: (entity) {
+        print('entity----> $entity');
+        return entity;
+      },
+    );
+    return resp;
+  }
+
+  @override
+  Future<Result<void>> insertTask(TaskParam? param) async {
+    final resp = await localCall<void, void>(
+      _appDatabase.taskDao.insertTask(param!.toEntity()),
+      mapper: (entity) {
+        return entity;
+      },
+    );
     return resp;
   }
 }

@@ -13,4 +13,7 @@ abstract class AppColor {
   static const Color neutral70 = Color(0xffB1AAA2);
 
   static const Color line = Color(0xffE5E0E1);
+  static const Color outline = Color(0xff7F7667);
+
+  static const Color onBackground = Color(0xff1E1B16);
 }

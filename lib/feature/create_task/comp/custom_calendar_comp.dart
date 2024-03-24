@@ -1,6 +1,6 @@
+import 'dart:ffi';
+
 import 'package:core/util/util.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:todo_forge/common/constants/font_size.dart';
@@ -10,7 +10,8 @@ import '../../../common/constants/app_color.dart';
 import '../../../common/constants/size_global.dart';
 
 class CustomCalendarComp extends StatefulWidget {
-  const CustomCalendarComp({super.key});
+  final ValueChanged<DateTime>? onChangedDate;
+  const CustomCalendarComp({super.key, this.onChangedDate});
 
   @override
   State<CustomCalendarComp> createState() => _CustomCalendarCompState();
@@ -20,12 +21,6 @@ class _CustomCalendarCompState extends State<CustomCalendarComp> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-
-  // @override
-  // void initState() {
-  //   _selectedDay = _focusedDay;
-  //   super.initState();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +41,7 @@ class _CustomCalendarCompState extends State<CustomCalendarComp> {
             _focusedDay = focusDay;
           },
           onDaySelected: (selectedDay, focusedDay) {
+            widget.onChangedDate?.call(selectedDay);
             setState(() {
               _selectedDay = selectedDay;
               _focusedDay = focusedDay;

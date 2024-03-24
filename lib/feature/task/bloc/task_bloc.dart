@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/src/bloc.dart';
 import 'package:core/core.dart';
+import 'package:domain/usecase/task/add_new_task_usecase.dart';
 import 'package:domain/usecase/task/get_all_task_usecase.dart';
 import 'package:injectable/injectable.dart';
 import 'package:todo_forge/di/di.dart';
@@ -11,24 +12,27 @@ import 'package:todo_forge/feature/task/bloc/task_state.dart';
 @injectable
 class TaskBloc extends BaseBloc<TaskEvent, TaskState> implements LibraryInitializer<void> {
   final GetAllTaskUsecase _getAllTaskUsecase;
-  TaskBloc(this._getAllTaskUsecase) : super(TaskLoadingState());
+  final AddNewTaskUsecase _addNewTaskUsecase;
+  TaskBloc(this._getAllTaskUsecase, this._addNewTaskUsecase) : super(TaskLoadingState());
 
   static TaskBloc get to => di<TaskBloc>()..init();
 
   @override
   void listEvent() {
-    on<TaskLoadingEvent>(_onTaskLoadingEvent);
-    on<TaskLoadmoreEvent>(_onTaskLoadmoreEvent);
-    on<TaskShowFilterEvent>(_onTaskShowFilterEvent);
-    on<TaskLoadedSuccessEvent>(_onTaskLoadedSuccessEvent);
+    on<FetchingTaskEvent>(_onFetchingTaskEvent);
+    on<AddNewTaskEvent>(_onAddNewTaskEvent);
+    on<UpdateTaskEvent>(_onUpdateTaskEvent);
+    on<DeleteTaskEvent>(_onDeleteTaskEvent);
+    on<SortTaskEvent>(_onSortTaskEvent);
+    on<SearchTaskEvent>(_onSearchTaskEvent);
   }
 
   @override
   Future<void> init() async {
-    add(TaskLoadingEvent());
+    add(FetchingTaskEvent());
   }
 
-  void _onTaskLoadingEvent(TaskLoadingEvent event, Emitter<TaskState> emit) async {
+  void _onFetchingTaskEvent(FetchingTaskEvent event, Emitter<TaskState> emit) async {
     final res = await _getAllTaskUsecase.invoke(null);
     res.when(
       error: (type, error, code) {
@@ -44,9 +48,22 @@ class TaskBloc extends BaseBloc<TaskEvent, TaskState> implements LibraryInitiali
     );
   }
 
-  void _onTaskLoadmoreEvent(TaskLoadmoreEvent event, Emitter<TaskState> emit) {}
+  void _onAddNewTaskEvent(AddNewTaskEvent event, Emitter<TaskState> emit) async {
+    showLoading();
+    // await Future.delayed(const Duration(seconds: 1));
+    await _addNewTaskUsecase.invoke(event.param);
+    hideLoading();
+  }
 
-  void _onTaskShowFilterEvent(TaskShowFilterEvent event, Emitter<TaskState> emit) {}
+  void _onUpdateTaskEvent(UpdateTaskEvent event, Emitter<TaskState> emit) {}
 
-  void _onTaskLoadedSuccessEvent(TaskLoadedSuccessEvent event, Emitter<TaskState> emit) {}
+  void _onDeleteTaskEvent(DeleteTaskEvent event, Emitter<TaskState> emit) {
+    showLoading();
+
+    hideLoading();
+  }
+
+  void _onSortTaskEvent(SortTaskEvent event, Emitter<TaskState> emit) {}
+
+  void _onSearchTaskEvent(SearchTaskEvent event, Emitter<TaskState> emit) {}
 }

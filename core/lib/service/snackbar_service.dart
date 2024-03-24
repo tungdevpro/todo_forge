@@ -37,6 +37,7 @@ class SnackBarService {
       CustomSnackbarWidget(
         onCloseClick: () => localAnimationController?.reverse(),
         message: message,
+        status: status,
       ),
     );
   }
