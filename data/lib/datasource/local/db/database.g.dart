@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `tasks` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `description` TEXT, `createdAt` TEXT, `dueDate` TEXT, `status` INTEGER)');
+            'CREATE TABLE IF NOT EXISTS `tasks` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `description` TEXT, `created_at` TEXT, `due_date` TEXT, `status` INTEGER, `is_pinned` INTEGER NOT NULL)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -111,9 +111,10 @@ class _$TaskDao extends TaskDao {
                   'id': item.id,
                   'name': item.name,
                   'description': item.description,
-                  'createdAt': item.createdAt,
-                  'dueDate': item.dueDate,
-                  'status': item.status
+                  'created_at': item.createdAt,
+                  'due_date': item.dueDate,
+                  'status': item.status,
+                  'is_pinned': item.isPinned ? 1 : 0
                 },
             changeListener),
         _taskEntityUpdateAdapter = UpdateAdapter(
@@ -124,9 +125,10 @@ class _$TaskDao extends TaskDao {
                   'id': item.id,
                   'name': item.name,
                   'description': item.description,
-                  'createdAt': item.createdAt,
-                  'dueDate': item.dueDate,
-                  'status': item.status
+                  'created_at': item.createdAt,
+                  'due_date': item.dueDate,
+                  'status': item.status,
+                  'is_pinned': item.isPinned ? 1 : 0
                 },
             changeListener),
         _taskEntityDeletionAdapter = DeletionAdapter(
@@ -137,9 +139,10 @@ class _$TaskDao extends TaskDao {
                   'id': item.id,
                   'name': item.name,
                   'description': item.description,
-                  'createdAt': item.createdAt,
-                  'dueDate': item.dueDate,
-                  'status': item.status
+                  'created_at': item.createdAt,
+                  'due_date': item.dueDate,
+                  'status': item.status,
+                  'is_pinned': item.isPinned ? 1 : 0
                 },
             changeListener);
 
@@ -157,14 +160,16 @@ class _$TaskDao extends TaskDao {
 
   @override
   Future<List<TaskEntity>> findAllTask() async {
-    return _queryAdapter.queryList('SELECT * FROM tasks',
+    return _queryAdapter.queryList(
+        'SELECT * FROM tasks ORDER BY created_at DESC',
         mapper: (Map<String, Object?> row) => TaskEntity(
             id: row['id'] as int?,
             name: row['name'] as String?,
             description: row['description'] as String?,
-            createdAt: row['createdAt'] as String?,
-            dueDate: row['dueDate'] as String?,
-            status: row['status'] as int?));
+            createdAt: row['created_at'] as String?,
+            dueDate: row['due_date'] as String?,
+            status: row['status'] as int?,
+            isPinned: (row['is_pinned'] as int) != 0));
   }
 
   @override
@@ -182,9 +187,10 @@ class _$TaskDao extends TaskDao {
             id: row['id'] as int?,
             name: row['name'] as String?,
             description: row['description'] as String?,
-            createdAt: row['createdAt'] as String?,
-            dueDate: row['dueDate'] as String?,
-            status: row['status'] as int?),
+            createdAt: row['created_at'] as String?,
+            dueDate: row['due_date'] as String?,
+            status: row['status'] as int?,
+            isPinned: (row['is_pinned'] as int) != 0),
         arguments: [id],
         queryableName: 'tasks',
         isView: false);
@@ -203,14 +209,16 @@ class _$TaskDao extends TaskDao {
 
   @override
   Future<List<TaskEntity>> findAllTaskByName(String name) async {
-    return _queryAdapter.queryList('SELECT * FROM tasks WHERE name LIKE ?1',
+    return _queryAdapter.queryList(
+        'SELECT * FROM tasks WHERE name LIKE ?1 ORDER BY created_at DESC',
         mapper: (Map<String, Object?> row) => TaskEntity(
             id: row['id'] as int?,
             name: row['name'] as String?,
             description: row['description'] as String?,
-            createdAt: row['createdAt'] as String?,
-            dueDate: row['dueDate'] as String?,
-            status: row['status'] as int?),
+            createdAt: row['created_at'] as String?,
+            dueDate: row['due_date'] as String?,
+            status: row['status'] as int?,
+            isPinned: (row['is_pinned'] as int) != 0),
         arguments: [name]);
   }
 
@@ -221,24 +229,52 @@ class _$TaskDao extends TaskDao {
             id: row['id'] as int?,
             name: row['name'] as String?,
             description: row['description'] as String?,
-            createdAt: row['createdAt'] as String?,
-            dueDate: row['dueDate'] as String?,
-            status: row['status'] as int?),
+            createdAt: row['created_at'] as String?,
+            dueDate: row['due_date'] as String?,
+            status: row['status'] as int?,
+            isPinned: (row['is_pinned'] as int) != 0),
         queryableName: 'tasks',
         isView: false);
   }
 
   @override
   Future<List<TaskEntity>> findAllTaskByStatus(int status) async {
-    return _queryAdapter.queryList('SELECT * FROM tasks WHERE status = ?1',
+    return _queryAdapter.queryList(
+        'SELECT * FROM tasks WHERE status = ?1 ORDER BY created_at DESC',
         mapper: (Map<String, Object?> row) => TaskEntity(
             id: row['id'] as int?,
             name: row['name'] as String?,
             description: row['description'] as String?,
-            createdAt: row['createdAt'] as String?,
-            dueDate: row['dueDate'] as String?,
-            status: row['status'] as int?),
+            createdAt: row['created_at'] as String?,
+            dueDate: row['due_date'] as String?,
+            status: row['status'] as int?,
+            isPinned: (row['is_pinned'] as int) != 0),
         arguments: [status]);
+  }
+
+  @override
+  Future<int?> updatePinnedById(
+    int isPinned,
+    int id,
+  ) async {
+    return _queryAdapter.query(
+        'UPDATE OR ABORT tasks SET is_pinned = ?1 WHERE id = ?2',
+        mapper: (Map<String, Object?> row) => row.values.first as int,
+        arguments: [isPinned, id]);
+  }
+
+  @override
+  Future<List<TaskEntity>> findPinnedTask() async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM tasks WHERE is_pinned = 1 LIMIT 1',
+        mapper: (Map<String, Object?> row) => TaskEntity(
+            id: row['id'] as int?,
+            name: row['name'] as String?,
+            description: row['description'] as String?,
+            createdAt: row['created_at'] as String?,
+            dueDate: row['due_date'] as String?,
+            status: row['status'] as int?,
+            isPinned: (row['is_pinned'] as int) != 0));
   }
 
   @override

@@ -6,8 +6,10 @@ import 'package:domain/usecase/task/add_new_task_usecase.dart';
 import 'package:domain/usecase/task/change_status_task_usecase.dart';
 import 'package:domain/usecase/task/delete_task_usecase.dart';
 import 'package:domain/usecase/task/find_all_task_by_keyword_usecase.dart';
+import 'package:domain/usecase/task/find_all_task_by_pinned_usecase.dart';
 import 'package:domain/usecase/task/find_all_task_by_status_usecase.dart';
 import 'package:domain/usecase/task/get_all_task_usecase.dart';
+import 'package:domain/usecase/task/update_pinned_task_by_id_usecase.dart';
 import 'package:injectable/injectable.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:todo_forge/di/di.dart';
@@ -22,6 +24,9 @@ class TaskBloc extends BaseBloc<TaskEvent, TaskState> implements LibraryInitiali
   final DeleteTaskUsecase _deleteTaskUsecase;
   final FindAllTaskByKeywordUsecase _findAllTaskByKeywordUsecase;
   final FindAllTaskByStatusUsecase _findAllTaskByStatusUsecase;
+  final UpdatePinnedTaskByIdUsecase _updatePinnedTaskByIdUsecase;
+  final FindAllTaskByPinnedUsecase _findAllTaskByPinnedUsecase;
+
   TaskBloc(
     this._getAllTaskUsecase,
     this._addNewTaskUsecase,
@@ -29,6 +34,8 @@ class TaskBloc extends BaseBloc<TaskEvent, TaskState> implements LibraryInitiali
     this._deleteTaskUsecase,
     this._findAllTaskByKeywordUsecase,
     this._findAllTaskByStatusUsecase,
+    this._updatePinnedTaskByIdUsecase,
+    this._findAllTaskByPinnedUsecase,
   ) : super(TaskLoadingState());
 
   static TaskBloc get to => di<TaskBloc>()..init();
@@ -42,6 +49,7 @@ class TaskBloc extends BaseBloc<TaskEvent, TaskState> implements LibraryInitiali
     on<FilterTaskEvent>(_onFilterTaskEvent);
     on<SearchTaskEvent>(_onSearchTaskEvent, transformer: debounce(const MediumDuration()));
     on<UpdateStatusByIdTaskEvent>(_onUpdateStatusByIdTaskEvent);
+    on<UpdatePinnedByIdTaskEvent>(_onUpdatePinnedByIdTaskEvent);
   }
 
   @override
@@ -52,9 +60,7 @@ class TaskBloc extends BaseBloc<TaskEvent, TaskState> implements LibraryInitiali
   void _onFetchingTaskEvent(FetchingTaskEvent event, Emitter<TaskState> emit) async {
     final res = await _getAllTaskUsecase.invoke(null);
     res.when(
-      error: (type, error, code) {
-        emit(TaskFailedState());
-      },
+      error: (type, error, code) => emit(TaskFailedState()),
       success: (data) {
         if (data == null || data.isEmpty) {
           emit(TaskEmptyState());
@@ -101,4 +107,6 @@ class TaskBloc extends BaseBloc<TaskEvent, TaskState> implements LibraryInitiali
   }
 
   EventTransformer<Event> debounce<Event>(Duration duration) => (events, mapper) => events.debounce(duration).switchMap(mapper);
+
+  void _onUpdatePinnedByIdTaskEvent(UpdatePinnedByIdTaskEvent event, Emitter<TaskState> emit) {}
 }

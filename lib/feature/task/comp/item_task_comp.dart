@@ -32,10 +32,6 @@ class ItemTaskComp extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Checkbox(
-              //   value: item.status == TaskStatus.inProccess.index ? false : true,
-              //   onChanged: (value) => _onChangedTaskStatus(context, value),
-              // ),
               StatefulBuilder(
                 builder: (BuildContext context, StateSetter setState) => Checkbox(
                   value: inProccess ? false : true,
@@ -58,9 +54,9 @@ class ItemTaskComp extends StatelessWidget {
                     const SizedBox(height: 5),
                     Text(item.description ?? '', maxLines: 3, overflow: TextOverflow.ellipsis, style: const TextStyle(color: AppColor.outline)),
                     if (item.dueDate != null) ...[
-                      const SizedBox(height: 15),
+                      const SizedBox(height: SizeGlobal.paddingSM),
                       Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: SizeGlobal.padding),
                           decoration: const BoxDecoration(color: AppColor.primary2, borderRadius: BorderRadius.all(Radius.circular(5))),
                           child: Row(
                             children: [

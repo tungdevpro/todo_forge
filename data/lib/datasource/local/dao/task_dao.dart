@@ -4,7 +4,7 @@ import 'package:floor/floor.dart';
 
 @dao
 abstract class TaskDao {
-  @Query('SELECT * FROM ${TableName.task}')
+  @Query('SELECT * FROM ${TableName.task} ORDER BY created_at DESC')
   Future<List<TaskEntity>> findAllTask();
 
   @Query('SELECT name FROM ${TableName.task}')
@@ -25,12 +25,18 @@ abstract class TaskDao {
   @Query('UPDATE OR ABORT ${TableName.task} SET status = :status WHERE id = :id')
   Future<int?> updateStatusById(int status, int id);
 
-  @Query('SELECT * FROM ${TableName.task} WHERE name LIKE :name')
+  @Query('SELECT * FROM ${TableName.task} WHERE name LIKE :name ORDER BY created_at DESC')
   Future<List<TaskEntity>> findAllTaskByName(String name);
 
   @Query('SELECT * FROM ${TableName.task}')
   Stream<List<TaskEntity>> findAllTasksAsStream();
 
-  @Query('SELECT * FROM ${TableName.task} WHERE status = :status')
+  @Query('SELECT * FROM ${TableName.task} WHERE status = :status ORDER BY created_at DESC')
   Future<List<TaskEntity>> findAllTaskByStatus(int status);
+
+  @Query('UPDATE OR ABORT ${TableName.task} SET is_pinned = :isPinned WHERE id = :id')
+  Future<int?> updatePinnedById(int isPinned, int id);
+
+  @Query('SELECT * FROM ${TableName.task} WHERE is_pinned = 1 LIMIT 1')
+  Future<List<TaskEntity>> findPinnedTask();
 }

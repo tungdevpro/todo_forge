@@ -1,5 +1,6 @@
 import 'package:core/core.dart';
 import 'package:domain/usecase/task/add_new_task_usecase.dart';
+import 'package:domain/usecase/task/update_pinned_task_by_id_usecase.dart';
 
 abstract class TaskEvent extends BaseEvent {}
 
@@ -65,6 +66,15 @@ class UpdateStatusByIdTaskEvent extends TaskEvent {
   final TaskParam param;
 
   UpdateStatusByIdTaskEvent({required this.param});
+
+  @override
+  List<Object?> get props => [param];
+}
+
+class UpdatePinnedByIdTaskEvent extends TaskEvent {
+  final TaskPinnedParam param;
+
+  UpdatePinnedByIdTaskEvent({required this.param});
 
   @override
   List<Object?> get props => [param];
