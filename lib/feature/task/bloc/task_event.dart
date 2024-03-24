@@ -72,10 +72,11 @@ class UpdateStatusByIdTaskEvent extends TaskEvent {
 }
 
 class UpdatePinnedByIdTaskEvent extends TaskEvent {
-  final TaskPinnedParam param;
+  final bool isPinned;
+  final int id;
 
-  UpdatePinnedByIdTaskEvent({required this.param});
+  UpdatePinnedByIdTaskEvent({required this.isPinned, required this.id});
 
   @override
-  List<Object?> get props => [param];
+  List<Object?> get props => [isPinned, id];
 }

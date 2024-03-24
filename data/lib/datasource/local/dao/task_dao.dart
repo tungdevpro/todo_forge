@@ -4,7 +4,7 @@ import 'package:floor/floor.dart';
 
 @dao
 abstract class TaskDao {
-  @Query('SELECT * FROM ${TableName.task} ORDER BY created_at DESC')
+  @Query('SELECT * FROM ${TableName.task} ORDER BY CASE WHEN is_pinned = 1 THEN 0 ELSE 1 END, created_at DESC')
   Future<List<TaskEntity>> findAllTask();
 
   @Query('SELECT name FROM ${TableName.task}')

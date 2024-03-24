@@ -44,16 +44,16 @@ class _TaskPageState extends CoreBindingState<TaskPage, TaskBloc> {
               IconButton(onPressed: _onToggleDarkLight, icon: SvgPicture.asset(IconResource.iconMoon)),
             ],
           ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(vertical: SizeGlobal.paddingSM, horizontal: SizeGlobal.paddingSM),
-            child: BlocBuilder<TaskBloc, TaskState>(
-              builder: (context, state) {
-                if (state is TaskLoadingState) return const LoadingTaskComp();
-                if (state is TaskEmptyState) return const EmptyTaskComp();
-                if (state is TaskSuccessState) {
-                  return Column(
-                    children: [
-                      Row(
+          body: BlocBuilder<TaskBloc, TaskState>(
+            builder: (context, state) {
+              if (state is TaskLoadingState) return const LoadingTaskComp();
+              if (state is TaskEmptyState) return const EmptyTaskComp();
+              if (state is TaskSuccessState) {
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: SizeGlobal.paddingSM, horizontal: SizeGlobal.paddingSM),
+                      child: Row(
                         children: [
                           Expanded(child: _buildSearch()),
                           const SizedBox(width: SizeGlobal.paddingSM),
@@ -65,14 +65,14 @@ class _TaskPageState extends CoreBindingState<TaskPage, TaskBloc> {
                               )),
                         ],
                       ),
-                      const SizedBox(height: SizeGlobal.padding),
-                      _buildListView(state.tasks),
-                    ],
-                  );
-                }
-                return const SizedBox();
-              },
-            ),
+                    ),
+                    const SizedBox(height: SizeGlobal.padding),
+                    _buildListView(state.tasks),
+                  ],
+                );
+              }
+              return const SizedBox();
+            },
           ),
           floatingActionButton: _buildFloatingActionButton(),
         ),
@@ -102,9 +102,8 @@ class _TaskPageState extends CoreBindingState<TaskPage, TaskBloc> {
         scrollDirection: Axis.vertical,
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         itemCount: tasks.length,
-        itemBuilder: (context, index) {
-          return ItemTaskComp(item: tasks[index]);
-        },
+        padding: EdgeInsets.zero,
+        itemBuilder: (context, index) => ItemTaskComp(item: tasks[index]),
       ),
     );
   }

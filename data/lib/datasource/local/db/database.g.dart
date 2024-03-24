@@ -161,7 +161,7 @@ class _$TaskDao extends TaskDao {
   @override
   Future<List<TaskEntity>> findAllTask() async {
     return _queryAdapter.queryList(
-        'SELECT * FROM tasks ORDER BY created_at DESC',
+        'SELECT * FROM tasks ORDER BY CASE WHEN is_pinned = 1 THEN 0 ELSE 1 END, created_at DESC',
         mapper: (Map<String, Object?> row) => TaskEntity(
             id: row['id'] as int?,
             name: row['name'] as String?,

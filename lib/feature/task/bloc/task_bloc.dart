@@ -108,5 +108,21 @@ class TaskBloc extends BaseBloc<TaskEvent, TaskState> implements LibraryInitiali
 
   EventTransformer<Event> debounce<Event>(Duration duration) => (events, mapper) => events.debounce(duration).switchMap(mapper);
 
-  void _onUpdatePinnedByIdTaskEvent(UpdatePinnedByIdTaskEvent event, Emitter<TaskState> emit) {}
+  void _onUpdatePinnedByIdTaskEvent(UpdatePinnedByIdTaskEvent event, Emitter<TaskState> emit) async {
+    // Get task to be pinned
+    final res = await _findAllTaskByPinnedUsecase.invoke(null);
+    res.when(
+      error: (type, error, code) {},
+      success: (data) {
+        if (data != null && data.isNotEmpty) {
+          // Update pinned to FALSE while has data
+          _updatePinnedTaskByIdUsecase.invoke(TaskPinnedParam(id: data.first.id!, isPinned: false));
+        }
+        // Update pinned to TRUE
+        _updatePinnedTaskByIdUsecase.invoke(TaskPinnedParam(id: event.id, isPinned: true));
+        add(FetchingTaskEvent());
+        AppNavigator.instance().close();
+      },
+    );
+  }
 }
