@@ -14,5 +14,14 @@ abstract class TaskDao {
   Stream<TaskEntity?> findTaskById(int id);
 
   @insert
-  Future<void> insertTask(TaskEntity person);
+  Future<void> insertTask(TaskEntity tasks);
+
+  @delete
+  Future<void> deleteTask(TaskEntity task);
+
+  @update
+  Future<void> updateTask(TaskEntity task);
+
+  @Query('UPDATE OR ABORT ${TableName.task} SET status = :status WHERE id = :id')
+  Future<int?> updateTypeById(int status, int id);
 }

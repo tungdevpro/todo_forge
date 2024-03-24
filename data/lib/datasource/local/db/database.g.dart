@@ -115,6 +115,32 @@ class _$TaskDao extends TaskDao {
                   'dueDate': item.dueDate,
                   'status': item.status
                 },
+            changeListener),
+        _taskEntityUpdateAdapter = UpdateAdapter(
+            database,
+            'tasks',
+            ['id'],
+            (TaskEntity item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'description': item.description,
+                  'createdAt': item.createdAt,
+                  'dueDate': item.dueDate,
+                  'status': item.status
+                },
+            changeListener),
+        _taskEntityDeletionAdapter = DeletionAdapter(
+            database,
+            'tasks',
+            ['id'],
+            (TaskEntity item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'description': item.description,
+                  'createdAt': item.createdAt,
+                  'dueDate': item.dueDate,
+                  'status': item.status
+                },
             changeListener);
 
   final sqflite.DatabaseExecutor database;
@@ -124,6 +150,10 @@ class _$TaskDao extends TaskDao {
   final QueryAdapter _queryAdapter;
 
   final InsertionAdapter<TaskEntity> _taskEntityInsertionAdapter;
+
+  final UpdateAdapter<TaskEntity> _taskEntityUpdateAdapter;
+
+  final DeletionAdapter<TaskEntity> _taskEntityDeletionAdapter;
 
   @override
   Future<List<TaskEntity>> findAllTask() async {
@@ -161,7 +191,28 @@ class _$TaskDao extends TaskDao {
   }
 
   @override
-  Future<void> insertTask(TaskEntity person) async {
-    await _taskEntityInsertionAdapter.insert(person, OnConflictStrategy.abort);
+  Future<int?> updateTypeById(
+    int status,
+    int id,
+  ) async {
+    return _queryAdapter.query(
+        'UPDATE OR ABORT tasks SET status = ?1 WHERE id = ?2',
+        mapper: (Map<String, Object?> row) => row.values.first as int,
+        arguments: [status, id]);
+  }
+
+  @override
+  Future<void> insertTask(TaskEntity tasks) async {
+    await _taskEntityInsertionAdapter.insert(tasks, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> updateTask(TaskEntity task) async {
+    await _taskEntityUpdateAdapter.update(task, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> deleteTask(TaskEntity task) async {
+    await _taskEntityDeletionAdapter.delete(task);
   }
 }
